@@ -1,8 +1,5 @@
 #!/bin/bash
 
-su -l ivtcro
-echo "$USER"
-pwd
 
 git clone -b monolith https://github.com/express42/reddit.git
 cd reddit && bundle install

@@ -6,7 +6,7 @@ cd ivtcro_infra
 
 bash install_ruby.sh
 bash install_mongodb.sh
-bash deploy.sh
+sudo -i -u ivtcro -S <<< "" bash /tmp/ivtcro_infra/deploy.sh
 
 cd ..
 rm -fR ivtcro_infra
