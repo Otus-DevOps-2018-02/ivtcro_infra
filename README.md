@@ -58,5 +58,8 @@ gsutil cp prepare-vm.sh gs://reddit-testapp/
 gcloud compute firewall-rules create default-puma-server --allow=tcp:9292 --source-ranges=0.0.0.0/0 --target-tags=puma-server
 ```
 
+### Параметры подключения к приложению
+```
 testapp_IP = 35.205.246.149
 testapp_port = 9292
+```
