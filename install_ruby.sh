@@ -12,7 +12,7 @@ fi
 
 if bundler -v | grep "Bundler version 1.11"
 then
-	echo "SUCCESS: Ruby Installed"
+	echo "SUCCESS: Bundler Installed"
 else
-	echo "ERROR: Ruby was not installed or version is wrong"	
+	echo "ERROR: Bundler was not installed or version is wrong"	
 fi
