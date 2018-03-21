@@ -1,6 +1,4 @@
-# ivtcro_infra
-ivtcro Infra repository
-
+# HOMEWORK №04: Bastion Host
 ## Подключение через ssh к ВМ GCP
 для работы комманд, указанных ниже, приватный ключ для работы с ВМ GCP должен быть добавлен в ssh-агента.
 
@@ -24,6 +22,7 @@ bastion_IP = 35.195.57.52
 someinternalhost_IP = 10.132.0.3
 ```
 
+# HOMEWORK №05: gcloud
 ## Работа с gcloud
 ### Создание новой ВМ c приложением Monolith Reddit
 Для создания ВМ c приложением Monolith reddit использовать следующую комманду
@@ -63,3 +62,5 @@ gcloud compute firewall-rules create default-puma-server --allow=tcp:9292 --sour
 testapp_IP = 35.205.246.149
 testapp_port = 9292
 ```
+
+# HOMEWORK №06: packer
