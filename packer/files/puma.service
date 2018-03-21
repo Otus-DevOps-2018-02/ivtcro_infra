@@ -1,0 +1,16 @@
+[Unit]
+Description=Test reddit app
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/puma -d
+User=ivtcro
+Group=ivtcro
+WorkingDirectory=/home/ivtcro/reddit/
+
+Restart=always
+TimeoutSec=15
+
+[Install]
+WantedBy=multi-user.target
