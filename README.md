@@ -38,8 +38,10 @@ someinternalhost_IP = 10.132.0.3
  ```
 
 для размещения startup-скрипта в Google Cloud Storage нужно выполнить следующую поледовательность команд:
+```
 gsutil mb gs://reddit-testapp/
 gsutil cp prepare-vm.sh gs://reddit-testapp/
+```
 
 в этом случае команда для создания ВМ быдут выглядеть следующим образом
 ```
@@ -64,3 +66,14 @@ testapp_port = 9292
 ```
 
 # HOMEWORK №06: packer
+
+Для работы Packer с GCP необходимо получить credentials выполнив команду `gcloud auth application-default login`.
+
+Для создания base-образа(MongoDB + Ruby) нужно выполнить команду `packer build -var-file=variables.json ubuntu16.json` в папке packer
+Шаблон образа параметризованный, можно задать параметры `project_id`(обязательный), `source_image_family`(обязательный), `machine_type`(опциональный - по умолчанию значение g1-small)
+
+Для создания immutable-образа(MongoDB + Ruby + с тестовым приложением) нужно выполнить команду `packer build -var-file=variables.json immutable.json`. По сравнению с base-образом есть доп. параметр - `image_family`, опциональный, по дефлоту значение "reddit-full".
+
+в папке `config scripts` лежит скрипт `create-reddit-vm.sh`, создающий ВМ из ранее созданного immutable образа
+
+
