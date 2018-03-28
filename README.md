@@ -76,4 +76,17 @@ testapp_port = 9292
 
 в папке `config scripts` лежит скрипт `create-reddit-vm.sh`, создающий ВМ из ранее созданного immutable образа
 
+# HOMEWORK №06: terraform
 
+Для добавления новых публичных ключей в проект в шаблон терраформ `main.tf` было добавлен следующий ресурс после провижионера google cloud:
+```
+resource "google_compute_project_metadata" "default" {
+  metadata {
+  ssh-keys = "user1:${file(var.public_key_path)} user2:${file(var.public_key_path)} user3:${file(var.public_key_path)}"
+  }
+}
+```
+и выполнена комманда terraform apply
+
+После чего через web-консоль GCP был добавлен ключ пользователя appuser_web и еще раз выполнена комманда terraform apply.
+Несмотря на то, что по сравнению со state-файлом никаких изменений не было, terraform отследил что фактические метаданные проекта и метаданные заданные в шеблоне не совпадают, и ключи проекта были удалены и созданы заданово. В результате ключ, созданный через WEB-консоль пропал.
