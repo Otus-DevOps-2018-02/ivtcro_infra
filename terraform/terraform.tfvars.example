@@ -1,5 +1,5 @@
 project = "infra-XXX"
-public_key_path = "~/.ssh/user"
+public_key_path = "~/.ssh/appuser.pub"
 disk_image = "reddit-base"
 region = "europe-west1"
-private_key_path = "~/.ssh/user"
+private_key_path = "~/.ssh/appuser"
