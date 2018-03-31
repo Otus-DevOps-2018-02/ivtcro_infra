@@ -6,15 +6,16 @@ provider "google" {
 
 resource "google_compute_project_metadata" "default" {
   metadata {
-  ssh-keys = "user1:${file(var.public_key_path)} user2:${file(var.public_key_path)} user3:${file(var.public_key_path)}"
+    ssh-keys = "ivtcro:${file(var.public_key_path)} user1:${file(var.public_key_path)} user2:${file(var.public_key_path)} user3:${file(var.public_key_path)}"
   }
 }
 
 resource "google_compute_instance" "app" {
-  name         = "reddit-app"
+  name         = "reddit-app-00${count.index}"
   machine_type = "g1-small"
   zone         = "${var.zone}"
   tags         = ["reddit-app"]
+  count        = "${var.vm_count}"
 
   # определение загрузочного диска
   boot_disk {

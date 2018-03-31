@@ -23,3 +23,8 @@ variable zone {
   description = "Zone"
   default     = "europe-west1-b"
 }
+
+variable vm_count {
+  description = "Number of VMs"
+  default     = "2"
+}
