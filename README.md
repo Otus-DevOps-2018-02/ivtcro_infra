@@ -76,7 +76,7 @@ testapp_port = 9292
 
 в папке `config scripts` лежит скрипт `create-reddit-vm.sh`, создающий ВМ из ранее созданного immutable образа
 
-# HOMEWORK №06: terraform
+# HOMEWORK №07: terraform
 
 ### Что сделано
  - установлен terraform
