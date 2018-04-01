@@ -15,10 +15,6 @@ variable private_key_path {
   description = "Path to the private key used for ssh access"
 }
 
-variable disk_image {
-  description = "Disk image"
-}
-
 variable zone {
   description = "Zone"
   default     = "europe-west1-b"
@@ -27,4 +23,14 @@ variable zone {
 variable vm_count {
   description = "Number of VMs"
   default     = "2"
+}
+
+variable db_disk_image {
+  description = "Disk image for reddit db"
+  default     = "reddit-db-base"
+}
+
+variable app_disk_image {
+  description = "Disk image for reddit app"
+  default     = "reddit-app-base"
 }
