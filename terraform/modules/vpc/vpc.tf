@@ -1,5 +1,5 @@
 resource "google_compute_firewall" "firewall_ssh" {
-  name    = "default-allow-ssh"
+  name    = "default-allow-ssh-${var.env_name}"
   network = "default"
 
   allow {
@@ -8,4 +8,5 @@ resource "google_compute_firewall" "firewall_ssh" {
   }
 
   source_ranges = "${var.source_ranges}"
+  target_tags   = ["reddit-${var.env_name}"]
 }

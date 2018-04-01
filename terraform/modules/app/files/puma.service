@@ -1,0 +1,15 @@
+[Unit]
+Description=Puma HTTP Server
+After=network.target
+
+[Service]
+Type=simple
+User=ivtcro
+WorkingDirectory=/home/ivtcro/reddit
+
+ExecStart=/bin/bash -lc 'DATABASE_URL=${mongodb_host_ip}:27107 puma'
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

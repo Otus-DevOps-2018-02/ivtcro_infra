@@ -1,8 +1,8 @@
 resource "google_compute_instance" "db" {
-  name         = "reddit-db"
+  name         = "reddit-db-${var.env_name}"
   machine_type = "g1-small"
   zone         = "${var.zone}"
-  tags         = ["reddit-db"]
+  tags         = ["reddit-db-${var.env_name}", "reddit-${var.env_name}"]
 
   boot_disk {
     initialize_params {
@@ -18,10 +18,22 @@ resource "google_compute_instance" "db" {
   metadata {
     ssh-keys = "ivtcro:${file(var.public_key_path)}"
   }
+
+  connection {
+    type        = "ssh"
+    user        = "ivtcro"
+    agent       = false
+    timeout     = "3m"
+    private_key = "${file(var.private_key_path)}"
+  }
+
+  provisioner "remote-exec" {
+    script = "${path.module}/files/mongo_changeBindIP.sh"
+  }
 }
 
 resource "google_compute_firewall" "firewall_mongo" {
-  name    = "allow-mongo-default"
+  name    = "allow-mongo-default-${var.env_name}"
   network = "default"
 
   allow {
@@ -30,8 +42,8 @@ resource "google_compute_firewall" "firewall_mongo" {
   }
 
   # правило применимо к инстансам с тегом ...
-  target_tags = ["reddit-db"]
+  target_tags = ["reddit-db-${var.env_name}"]
 
   # порт будет доступен только для инстансов с тегом ...
-  source_tags = ["reddit-app"]
+  source_tags = ["reddit-app-${var.env_name}"]
 }
