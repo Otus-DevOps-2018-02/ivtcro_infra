@@ -1,0 +1,34 @@
+{
+  "variables": {
+    "project_id": null,
+    "source_image_family": null,
+    "machine_type": "g1-small"
+  },
+  "builders": [
+    {
+    "type": "googlecompute",
+    "project_id": "{{user `project_id`}}",
+    "image_name": "reddit-db-base-{{timestamp}}",
+    "image_family": "reddit-db-base",
+    "source_image_family": "{{user `source_image_family`}}",
+    "zone": "europe-west1-b",
+    "ssh_username": "ivtcro",
+    "machine_type": "{{user `machine_type`}}",
+
+    "disk_size" : "10",
+    "disk_type" : "pd-standard",
+    "image_description" : "base VM image for reddit test app",
+    "preemptible": "true",
+    "tags" : ["otus","devops","packer","gcp"],
+    "network" : "default"
+
+    }
+  ],
+"provisioners": [
+    {
+      "type": "shell",
+      "script": "scripts/install_mongodb.sh",
+      "execute_command": "sudo {{.Path}}"
+    }
+  ]
+}
