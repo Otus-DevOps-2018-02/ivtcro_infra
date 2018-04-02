@@ -31,7 +31,7 @@ resource "null_resource" "deploy_app" {
   count = "${var.deploy_app == "yes" ? 1 : 0}"
 
   triggers {
-    app_instance_id = "${join(",", google_compute_instance.app.*.id)}"
+    app_instance_id = "${google_compute_instance.app.id}"
   }
 
   connection {
