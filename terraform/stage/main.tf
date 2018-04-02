@@ -12,6 +12,7 @@ module "app" {
   app_disk_image   = "${var.app_disk_image}"
   db_ip            = "${module.db.reddit-db-instance-int-ip}"
   env_name         = "stage"
+  deploy_app       = "yes"
 }
 
 module "db" {

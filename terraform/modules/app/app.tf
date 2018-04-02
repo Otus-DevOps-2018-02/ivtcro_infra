@@ -21,8 +21,21 @@ resource "google_compute_instance" "app" {
   metadata {
     ssh-keys = "ivtcro:${file(var.public_key_path)}"
   }
+}
+
+locals {
+  app_external_ip = "${google_compute_instance.app.network_interface.0.access_config.0.assigned_nat_ip}"
+}
+
+resource "null_resource" "deploy_app" {
+  count = "${var.deploy_app == "yes" ? 1 : 0}"
+
+  triggers {
+    app_instance_id = "${join(",", google_compute_instance.app.*.id)}"
+  }
 
   connection {
+    host        = "${local.app_external_ip}"
     type        = "ssh"
     user        = "ivtcro"
     agent       = false
@@ -31,13 +44,11 @@ resource "google_compute_instance" "app" {
   }
 
   provisioner "file" {
-    count       = "${var.deploy_app == "yes" ? 1 : 0}"
     content     = "${data.template_file.puma_unit_file.rendered}"
     destination = "/tmp/puma.service"
   }
 
   provisioner "remote-exec" {
-    count  = "${var.deploy_app == "yes" ? 1 : 0}"
     script = "${path.module}/files/deploy.sh"
   }
 }
