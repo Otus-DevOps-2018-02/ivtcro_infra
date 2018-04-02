@@ -38,8 +38,10 @@ someinternalhost_IP = 10.132.0.3
  ```
 
 для размещения startup-скрипта в Google Cloud Storage нужно выполнить следующую поледовательность команд:
+```
 gsutil mb gs://reddit-testapp/
 gsutil cp prepare-vm.sh gs://reddit-testapp/
+```
 
 в этом случае команда для создания ВМ быдут выглядеть следующим образом
 ```
@@ -64,3 +66,55 @@ testapp_port = 9292
 ```
 
 # HOMEWORK №06: packer
+
+Для работы Packer с GCP необходимо получить credentials выполнив команду `gcloud auth application-default login`.
+
+Для создания base-образа(MongoDB + Ruby) нужно выполнить команду `packer build -var-file=variables.json ubuntu16.json` в папке packer
+Шаблон образа параметризованный, можно задать параметры `project_id`(обязательный), `source_image_family`(обязательный), `machine_type`(опциональный - по умолчанию значение g1-small)
+
+Для создания immutable-образа(MongoDB + Ruby + с тестовым приложением) нужно выполнить команду `packer build -var-file=variables.json immutable.json`. По сравнению с base-образом есть доп. параметр - `image_family`, опциональный, по дефлоту значение "reddit-full".
+
+в папке `config scripts` лежит скрипт `create-reddit-vm.sh`, создающий ВМ из ранее созданного immutable образа
+
+# HOMEWORK №07: terraform
+
+### Что сделано
+ - установлен terraform
+ - все материалы по данному дз созданы в папке terraform
+ - созданы файлы деплоя для создания инстансов приложения(`main.tf`) а также для настройки http-балансировки между этими инстансами(`lb.tf`)
+ - изучены комманды `apply`, `plan`, `refresh`, `tint`, `show`, `destroy`, `taint`, `fmt`
+ - настроены input- и output-переменные
+
+### Как провеорить работу
+ - выполнить команду `terraform apply` в папке 	`terraform`
+ - посмотреть значение output-переменных (`terraform output`)
+ - перейти по адерсу http://app_external_ip_on_lb, убедиться, что страница отрывается
+ - подключиться к app_external_ip_1 по ssh, остановить сервис puma
+ - в консоле GCP провеорить, что для backend-сервиса reddit-app-backend только один инстанс проходит проверку http-check
+ - перейти по адерсу http://app_external_ip_on_lb, убедится что страница отрывается
+
+
+### Задание с добавлением новых ключей в проект
+Для добавления новых публичных ключей в проект в шаблон терраформ `main.tf` было добавлен следующий ресурс после провижионера google cloud:
+```
+resource "google_compute_project_metadata" "default" {
+  metadata {
+  ssh-keys = "user1:${file(var.public_key_path)} user2:${file(var.public_key_path)} user3:${file(var.public_key_path)}"
+  }
+}
+```
+и выполнена комманда terraform apply
+
+После чего через web-консоль GCP был добавлен ключ пользователя appuser_web и еще раз выполнена комманда terraform apply.
+Несмотря на то, что по сравнению со state-файлом никаких изменений не было, terraform отследил что фактические метаданные проекта и метаданные заданные в шеблоне не совпадают, и ключи проекта были удалены и созданы заданово. В результате ключ, созданный через WEB-консоль пропал.
+
+### Задание с настройкой балансировщика
+
+Конфигурация http-балансировщика добавлена в файл `lb.tf`. Для подключения к сервису через балансировщик нужно:
+- выполнить комманду `terraform output`
+- открыть в браузере адрес http://app_external_ip_on_lb
+
+Проблемы настроенной конфигурации:
+ - не учитывается загрузка интансов при балансировке.
+ - нет автоматического скейлинга при нехватке ресурсов 
+ - каждый инстанс приложения независимый, нет репликации данных
