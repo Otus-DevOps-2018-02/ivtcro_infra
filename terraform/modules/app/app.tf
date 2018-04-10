@@ -1,56 +1,55 @@
-provider "google" {
-  version = "1.4.0"
-  project = "${var.project}"
-  region  = "${var.region}"
-}
-
-resource "google_compute_project_metadata" "default" {
-  metadata {
-    ssh-keys = "ivtcro:${file(var.public_key_path)} user1:${file(var.public_key_path)} user2:${file(var.public_key_path)} user3:${file(var.public_key_path)}"
-  }
-}
-
 resource "google_compute_instance" "app" {
-  name         = "reddit-app-00${count.index}"
+  name         = "reddit-app-${var.env_name}"
   machine_type = "g1-small"
   zone         = "${var.zone}"
-  tags         = ["reddit-app"]
-  count        = "${var.vm_count}"
+  tags         = ["reddit-app-${var.env_name}", "reddit-${var.env_name}"]
 
-  # определение загрузочного диска
   boot_disk {
     initialize_params {
-      image = "${var.disk_image}"
+      image = "${var.app_disk_image}"
     }
   }
 
-  # определение сетевого интерфейса
   network_interface {
-    # сеть, к которой присоединить данный интерфейс
     network = "default"
 
-    # использовать ephemeral IP для доступа из Интернет
-    access_config {}
+    access_config = {
+      nat_ip = "${google_compute_address.app_ip.address}"
+    }
   }
 
   metadata {
     ssh-keys = "ivtcro:${file(var.public_key_path)}"
   }
+}
+
+locals {
+  app_external_ip = "${google_compute_instance.app.network_interface.0.access_config.0.assigned_nat_ip}"
+}
+
+resource "null_resource" "deploy_app" {
+  count = "${var.deploy_app == "yes" ? 1 : 0}"
+
+  triggers {
+    app_instance_id = "${google_compute_instance.app.id}"
+  }
 
   connection {
+    host        = "${local.app_external_ip}"
     type        = "ssh"
     user        = "ivtcro"
     agent       = false
+    timeout     = "3m"
     private_key = "${file(var.private_key_path)}"
   }
 
   provisioner "file" {
-    source      = "files/puma.service"
+    content     = "${data.template_file.puma_unit_file.rendered}"
     destination = "/tmp/puma.service"
   }
 
   provisioner "remote-exec" {
-    script = "files/deploy.sh"
+    script = "${path.module}/files/deploy.sh"
   }
 }
 
@@ -70,5 +69,17 @@ resource "google_compute_firewall" "firewall_puma" {
   source_ranges = ["0.0.0.0/0"]
 
   # Правило применимо для инстансов с тегом …
-  target_tags = ["reddit-app"]
+  target_tags = ["reddit-app-${var.env_name}"]
+}
+
+resource "google_compute_address" "app_ip" {
+  name = "reddit-app-ip-${var.env_name}"
+}
+
+data "template_file" "puma_unit_file" {
+  template = "${file("${path.module}/files/puma.service")}"
+
+  vars {
+    mongodb_host_ip = "${var.db_ip}"
+  }
 }
