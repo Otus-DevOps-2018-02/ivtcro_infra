@@ -149,8 +149,30 @@ ___
 9. Добавлены провижионеры для деполоя приложения и для настройки приложения и mongo с учетом работы на разных ВМ
 10. Добавлена переменная deploy_app, определяющая необходимость деплоя приложения, деплой приложения сделан условным
 
-# HOMEWORK №08: Ansible basics <a name="homework_09"></a>
+# HOMEWORK №09: Ansible basics <a name="homework_09"></a>
 
+Что сделано:
+
+ - проинсталлирован и сконфигурирован ansible
+ - созданы inventory файлы в формате ini, yaml.
+ - создан скрипт для вывода inventory для варианта с динамическим inventory
+ - выполнены задания для ознакомеления с различными видами тасков
+ - создал простой плейбук для клонирования репозитория с github
+
+Как запустить проект:
+  - создать одно из окружения (stage/prod) в соответсвии с файлами деплоя из папки terraform выполнив комманду `terraform apply`
+  - скорретировать файлы инвентори(inventory, inventory.json, inventory.yml) указав IP адреса созданных ВМ
+
+Как проверить работоспособность:
+  - выполнить последовательно комманды:
+  ```
+     ansible-playbook -i inventory clone.yml
+     ansible-playbook -i inventory.sh clone.yml
+     ansible-playbook -i inventory.yml clone.yml
+  ```
+  и убедиться, что не возникло ошибок
+
+Ответ на вопрос в задании:
 Повторное выполнение комманды `ansible-playbook clone.yml`(делает клон репозитория на ВМ appserver) не приводит к изменениям на ВМ.
 ```
 appserver                  : ok=2    changed=0    unreachable=0    failed=0
