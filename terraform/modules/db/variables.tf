@@ -19,3 +19,8 @@ variable env_name {
   description = "Type of env. to be created: prod/stage/..."
   default     = ""
 }
+
+variable deploy_app {
+  description = "yes/no"
+  default     = "no"
+}

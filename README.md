@@ -5,6 +5,7 @@
 4. [HOMEWORK №07: terraform](#homework_07)
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
+6. [HOMEWORK №10: Ansible basics](#homework_10)
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
@@ -149,6 +150,7 @@ ___
 9. Добавлены провижионеры для деполоя приложения и для настройки приложения и mongo с учетом работы на разных ВМ
 10. Добавлена переменная deploy_app, определяющая необходимость деплоя приложения, деплой приложения сделан условным
 
+__
 # HOMEWORK №09: Ansible basics <a name="homework_09"></a>
 
 Что сделано:
@@ -182,3 +184,9 @@ appserver                  : ok=2    changed=0    unreachable=0    failed=0
 appserver                  : ok=2    changed=1    unreachable=0    failed=0   
 
 ```
+
+__
+# HOMEWORK №10: Ansible advanced: templates, handlers,... <a name="homework_10"></a>
+
+
+1. Создан файл `reddit_app.yml` для деполя приложения и изменения конфигов mongod
