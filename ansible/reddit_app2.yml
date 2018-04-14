@@ -1,50 +1,64 @@
 ---
-- name: Configure hosts & deploy application
-  hosts: all
+- name: Configure mongod
+  hosts: db
+  tags: db-tag
+  become: true
   vars:
     mongo_bind_ip: 0.0.0.0
-    db_host: 10.132.0.2
   tasks:
 
     - name: Chnage mongod configuration file
-      become: true
       template:
         src: templates/mongod.conf.j2
         dest: /etc/mongod.conf
         mode: 0644
-      tags: db-tag
       notify: restart mongod
 
+  handlers:
+  - name: restart mongod
+    service: name=mongod state=restarted
+
+
+- name: Configure application host
+  hosts: app
+  tags: app-tag
+  become: true
+  vars:
+    db_host: 10.132.0.2
+  tasks:
 
     - name: Add Puma unit file
-      become: true
       copy:
         src: files/puma.service
         dest: /etc/systemd/system/puma.service
-      tags: app-tag
       notify: reload puma
-
 
     - name: Add config file with DB connection parameters
       template:
         src: templates/db_config.j2
         dest: /home/ivtcro/db_config
-      tags: app-tag
-
+        owner: ivtcro
+        group: ivtcro
 
     - name: enable puma
-      become: true
       systemd: name=puma enabled=yes
-      tags: app-tag
+
+  handlers:
+  - name: reload puma
+    systemd: name=puma state=restarted
 
 
+
+- name: Deploy application
+  hosts: app
+  tags: deploy-tag
+  tasks:
 
     - name: Fetch the latest version of application code
       git:
         repo: 'https://github.com/Otus-DevOps-2017-11/reddit.git'
         dest: /home/ivtcro/reddit
         version: monolith
-      tags: deploy-tag
       notify: restart puma
 
 
@@ -52,18 +66,8 @@
       bundler:
         state: present
         chdir: /home/ivtcro/reddit
-      tags: deploy-tag
-
 
   handlers:
-  - name: restart mongod
-    become: true
-    service: name=mongod state=restarted
-
-  - name: reload puma
-    become: true
-    systemd: name=puma state=restarted
-
   - name: restart puma
     become: true
     systemd: name=puma state=restarted
