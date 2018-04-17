@@ -189,4 +189,25 @@ __
 # HOMEWORK №10: Ansible advanced: templates, handlers,... <a name="homework_10"></a>
 
 
-1. Создан файл `reddit_app.yml` для деполя приложения и изменения конфигов mongod
+1. Создан файл `reddit_app_one_play.yml` с одним сценарием для установки puma, деполя приложения и изменения конфигов mongod
+2. Создан файл `reddit_app_multiple_plays.yml` с тремя сценарями: для установки puma, деполя приложения и изменения конфигов mongod
+3. Созданы отдельные файлы на каждый из сценариев: установки puma(`app.yml`), деполя приложения(`deploy.yml`) и изменения конфигов mongod(`db.yml`). И создан файл включающий эти три файла - `site.yml`
+4. Создан скрипт для формирования динамического репозитрия по данным полученнм от GCP: `gcp_inventory.py`
+5. Скрипты создания образов packer переделаны - shell-скрипты для профижионеров заменены на созданные ansible-playbook: `packer_db.yml` и `packer_app.yml`
+
+Как провеорить работу:
+ - открыть доступ к 22 порту
+ - запустить из корня репозитория сборку образов коммандами
+```
+		packer build -var-file=packer/variables.json packer/app.json
+		packer build -var-file=packer/variables.json packer/db.json
+
+```
+ - закрыть доступ к порту 22
+ - создать stage-окружение, для этого в папке `terraform/stage` выполнить комманду
+```
+		terraform apply
+```
+ - скопировать/сохранить значение выходной переменной app_external_ip
+ - перейти в папку `ansible` и выполнить комманду ansible-playbook site.yml
+ - убедиться что открывается страница по URL app_external_ip:9292

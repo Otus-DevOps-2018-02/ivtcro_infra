@@ -1,8 +1,8 @@
 app:
   hosts:
     appserver:
-      ansible_host: 35.195.33.132
+      ansible_host: 35.189.247.196
 db:
   hosts:
     dbserver:
-      ansible_host: 35.189.247.196 
+      ansible_host: 35.190.197.74
