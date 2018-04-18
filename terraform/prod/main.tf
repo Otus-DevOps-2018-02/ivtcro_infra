@@ -12,7 +12,7 @@ module "app" {
   app_disk_image   = "${var.app_disk_image}"
   db_ip            = "${module.db.reddit-db-instance-int-ip}"
   env_name         = "prod"
-  deploy_app       = "yes"
+  deploy_app       = "no"
 }
 
 module "db" {
@@ -22,6 +22,7 @@ module "db" {
   zone             = "${var.zone}"
   db_disk_image    = "${var.db_disk_image}"
   env_name         = "prod"
+  deploy_app       = "no"
 }
 
 module "vpc" {

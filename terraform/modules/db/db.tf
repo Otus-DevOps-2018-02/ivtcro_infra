@@ -18,8 +18,21 @@ resource "google_compute_instance" "db" {
   metadata {
     ssh-keys = "ivtcro:${file(var.public_key_path)}"
   }
+}
+
+locals {
+  db_external_ip = "${google_compute_instance.db.network_interface.0.access_config.0.assigned_nat_ip}"
+}
+
+resource "null_resource" "change_mongo_conf" {
+  count = "${var.deploy_app == "yes" ? 1 : 0}"
+
+  triggers {
+    db_instance_id = "${google_compute_instance.db.id}"
+  }
 
   connection {
+    host        = "${local.db_external_ip}"
     type        = "ssh"
     user        = "ivtcro"
     agent       = false

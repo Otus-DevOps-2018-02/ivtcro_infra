@@ -5,6 +5,7 @@
 4. [HOMEWORK №07: terraform](#homework_07)
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
+6. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
@@ -149,6 +150,7 @@ ___
 9. Добавлены провижионеры для деполоя приложения и для настройки приложения и mongo с учетом работы на разных ВМ
 10. Добавлена переменная deploy_app, определяющая необходимость деплоя приложения, деплой приложения сделан условным
 
+__
 # HOMEWORK №09: Ansible basics <a name="homework_09"></a>
 
 Что сделано:
@@ -182,3 +184,30 @@ appserver                  : ok=2    changed=0    unreachable=0    failed=0
 appserver                  : ok=2    changed=1    unreachable=0    failed=0   
 
 ```
+
+__
+# HOMEWORK №10: Ansible advanced: templates, handlers,... <a name="homework_10"></a>
+
+
+1. Создан файл `reddit_app_one_play.yml` с одним сценарием для установки puma, деполя приложения и изменения конфигов mongod
+2. Создан файл `reddit_app_multiple_plays.yml` с тремя сценарями: для установки puma, деполя приложения и изменения конфигов mongod
+3. Созданы отдельные файлы на каждый из сценариев: установки puma(`app.yml`), деполя приложения(`deploy.yml`) и изменения конфигов mongod(`db.yml`). И создан файл включающий эти три файла - `site.yml`
+4. Создан скрипт для формирования динамического репозитрия по данным полученнм от GCP: `gcp_inventory.py`
+5. Скрипты создания образов packer переделаны - shell-скрипты для профижионеров заменены на созданные ansible-playbook: `packer_db.yml` и `packer_app.yml`
+
+Как провеорить работу:
+ - открыть доступ к 22 порту
+ - запустить из корня репозитория сборку образов коммандами
+```
+		packer build -var-file=packer/variables.json packer/app.json
+		packer build -var-file=packer/variables.json packer/db.json
+
+```
+ - закрыть доступ к порту 22
+ - создать stage-окружение, для этого в папке `terraform/stage` выполнить комманду
+```
+		terraform apply
+```
+ - скопировать/сохранить значение выходной переменной app_external_ip
+ - перейти в папку `ansible` и выполнить комманду ansible-playbook site.yml
+ - убедиться что открывается страница по URL app_external_ip:9292
