@@ -6,7 +6,7 @@
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
 7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
-8. [HOMEWORK №11: Ansible roles](#homework_11))
+8. [HOMEWORK №11: Ansible roles](#homework_11)
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
@@ -151,7 +151,7 @@ ___
 9. Добавлены провижионеры для деполоя приложения и для настройки приложения и mongo с учетом работы на разных ВМ
 10. Добавлена переменная deploy_app, определяющая необходимость деплоя приложения, деплой приложения сделан условным
 
-__
+___
 # HOMEWORK №09: Ansible basics <a name="homework_09"></a>
 
 Что сделано:
@@ -186,7 +186,7 @@ appserver                  : ok=2    changed=1    unreachable=0    failed=0
 
 ```
 
-__
+___
 # HOMEWORK №10: Ansible advanced: templates, handlers,... <a name="homework_10"></a>
 
 Что сделано:
@@ -214,7 +214,7 @@ __
  - убедиться что открывается страница по URL app_external_ip:9292
 
 
-__
+___
 # HOMEWORK №11: Ansible roles <a name="homework_11"></a>
 
 Что сделано:
