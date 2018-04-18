@@ -5,7 +5,8 @@
 4. [HOMEWORK №07: terraform](#homework_07)
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
-6. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
+7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10
+8. [HOMEWORK №11: Ansible roles](#homework_11))
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
@@ -188,7 +189,7 @@ appserver                  : ok=2    changed=1    unreachable=0    failed=0
 __
 # HOMEWORK №10: Ansible advanced: templates, handlers,... <a name="homework_10"></a>
 
-
+Что сделано:
 1. Создан файл `reddit_app_one_play.yml` с одним сценарием для установки puma, деполя приложения и изменения конфигов mongod
 2. Создан файл `reddit_app_multiple_plays.yml` с тремя сценарями: для установки puma, деполя приложения и изменения конфигов mongod
 3. Созданы отдельные файлы на каждый из сценариев: установки puma(`app.yml`), деполя приложения(`deploy.yml`) и изменения конфигов mongod(`db.yml`). И создан файл включающий эти три файла - `site.yml`
@@ -199,15 +200,50 @@ __
  - открыть доступ к 22 порту
  - запустить из корня репозитория сборку образов коммандами
 ```
-		packer build -var-file=packer/variables.json packer/app.json
-		packer build -var-file=packer/variables.json packer/db.json
+     packer build -var-file=packer/variables.json packer/app.json
+     packer build -var-file=packer/variables.json packer/db.json
 
 ```
  - закрыть доступ к порту 22
  - создать stage-окружение, для этого в папке `terraform/stage` выполнить комманду
 ```
-		terraform apply
+     terraform apply
 ```
  - скопировать/сохранить значение выходной переменной app_external_ip
- - перейти в папку `ansible` и выполнить комманду ansible-playbook site.yml
+ - перейти в папку `ansible` и выполнить комманду `ansible-playbook site.yml`
  - убедиться что открывается страница по URL app_external_ip:9292
+
+
+__
+# HOMEWORK №11: Ansible roles <a name="homework_11"></a>
+
+Что сделано:
+1. Созданы роли для ВМ типа `app` и `db`
+2. Созданы описания окружений `environments/prod` и `environments/stage` с динамическими инвентори файлами
+3. Переменные для групп хостов вынесены в описание окружений в `environments/prod/group-vars` и `environments/stage/group-vars`, также добавлена переменная с именем окружения группы хостов `all`
+4. Все созданные ране plabook'и перемещены в папку `ansible/playbooks`
+5. Всевозможные варианты иныентори, созданные в предыдущих ДЗ, перемещены в папку `ansible/old`
+6. В playbook `app.yml` добавден вызов роли `jdauphant.nginx`
+7. Требования к роли `jdauphant.nginx` прописаны в файле `requrements.yml` в описании окружения
+8. Устнаовлена роль коммандоЙ:
+```
+     ansible-galaxy install -r environments/stage/requirements.yml
+```
+9. Создан playbook для провижионинга пользователей: `ansible/users.yml`
+10. Создан файл vault.key с ключем шифрования
+11. В описание окружений добавлены файлы с перечнем создаваемых пользователей и зашифованы с помощью Ansible Vault:
+```
+     ansible-vault encrypt environments/prod/credentials.yml
+     ansible-vault encrypt environments/stage/credentials.yml
+```
+
+Как провеорить работы:
+
+- создать stage-окружение, для этого в папке `terraform/stage` выполнить комманду
+```
+		terraform apply
+```
+- скопировать/сохранить значение выходной переменной app_external_ip
+- перейти в папку `ansible` и выполнить комманду `ansible-playbook playbooks/site.yml`
+- убедиться что открывается страница по URL http://app_external_ip
+- подключится по ssh к любой из ВМ из под пользователя ivtcro и переключиться на пользователя admin
