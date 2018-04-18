@@ -5,7 +5,7 @@
 4. [HOMEWORK №07: terraform](#homework_07)
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
-7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10
+7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
 8. [HOMEWORK №11: Ansible roles](#homework_11))
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
