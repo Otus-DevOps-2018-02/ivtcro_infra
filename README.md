@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra.svg?branch=master)](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra)
+
 # Содержание
 1. [HOMEWORK №04: Bastion Host](#homework_04)
 2. [HOMEWORK №05: gcloud](#homework_05)
@@ -215,7 +217,7 @@ ___
 
 
 ___
-# HOMEWORK №11: Ansible roles <a name="homework_11"></a>
+# HOMEWORK №11: Ansible roles <a name="homework_11"></a> [![Build Status](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra.svg?branch=ansible-3)](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra)
 
 Что сделано:
 1. Созданы роли для ВМ типа `app` и `db`
