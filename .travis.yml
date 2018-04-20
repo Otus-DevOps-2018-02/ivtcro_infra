@@ -5,6 +5,8 @@ branches:
   only:
   - master
 before_install:
+- curl https://raw.githubusercontent.com/express42/otus-homeworks/2018-02/run.sh |
+  bash  
 # packer validate
 - wget --directory-prefix=/tmp/ https://releases.hashicorp.com/packer/1.2.2/packer_1.2.2_linux_amd64.zip
 - sudo unzip /tmp/packer_1.2.2_linux_amd64.zip -d /usr/sbin
@@ -20,8 +22,7 @@ before_install:
 - sudo unzip /tmp/tflint_linux_amd64.zip -d /usr/sbin
 - cd terraform/stage; terraform init; terraform validate -var-file=terraform.tfvars.example -check-variables=false; tflint
 - cd ../prod; terraform init; terraform validate -var-file=terraform.tfvars.example -check-variables=false; tflint
-- curl https://raw.githubusercontent.com/express42/otus-homeworks/2018-02/run.sh |
-  bash
+
 
 
 
