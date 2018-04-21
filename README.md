@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra.svg?branch=master)](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra)
 
 # Содержание
 1. [HOMEWORK №04: Bastion Host](#homework_04)
@@ -7,7 +8,7 @@
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
 7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
-8. [HOMEWORK №11: Ansible roles](#homework_11) [![Build Status](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra.svg?branch=ansible-3)](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra)
+8. [HOMEWORK №11: Ansible roles](#homework_11)
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
