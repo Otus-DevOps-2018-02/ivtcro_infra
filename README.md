@@ -274,3 +274,7 @@ ___
 ## Тестирование роли
 
 ### Что сделано:
+
+создано правило FW для открытия доступа по порту 22 для ВМ с тэгом packer.
+TODO: readme for DB role
+Роль DB вынесена в https://github.com/ivtcro/otus_ansible_db_role

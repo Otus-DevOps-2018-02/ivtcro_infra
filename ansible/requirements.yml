@@ -1,0 +1,3 @@
+- name: db
+  src: https://github.com/ivtcro/otus_ansible_db_role.git
+  version: origin/master
