@@ -8,6 +8,8 @@
 6. [HOMEWORK №09: Ansible basics](#homework_09)
 7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
 8. [HOMEWORK №11: Ansible roles](#homework_11) [![Build Status](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra.svg?branch=ansible-3)](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra)
+9. [HOMEWORK №12: Vagrant, role testing](#homework_12)
+
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
@@ -264,8 +266,8 @@ ___
  - подготовлен конфигураионный файл `ansible/Vagrantgile`
  - имя пользователя для ролей и плебуков вынесено в переменные
  - добавлен плейбук `playbooks/base.yml` для установки Python 2.7 и включен в `playbooks/site.yml`
- - для роли app установка puma и ruby вынесены в отдельные такси, а unit-файл для puma преобразован в шаблон с возможность зававать имя пользователя переменной
- - для роли app установка и настройка MongoDB вынесены вот дельные файлы
+ - для роли app установка puma и ruby вынесены в отдельные task'и, а unit-файл для puma преобразован в шаблон с возможность зававать имя пользователя переменной
+ - для роли app установка и настройка MongoDB вынесены в отдельные файлы
  - в конфигурацию vagrnat добавлены настройки nginx для перенаправления запросов с порта 80 на 9292
 
 ### Как проверить:
@@ -275,6 +277,22 @@ ___
 
 ### Что сделано:
 
-создано правило FW для открытия доступа по порту 22 для ВМ с тэгом packer.
-TODO: readme for DB role
-Роль DB вынесена в https://github.com/ivtcro/otus_ansible_db_role
+- Установлены модули Molecule, Ansible, Testinfra в отдельное окружение python(создано с помощью virtualenvwrapper)
+- подготовлена конфигурация для тестирования роли db с помощью molecule
+- роль DB вынесена в отдельный репозиторий https://github.com/ivtcro/otus_ansible_db_role
+- создано правило FW на GCP для открытия доступа по порту 22 для ВМ с тэгом packer.
+- шаблоны packer'а переделаны с учетом использования ролей
+- создан сервисный аккаунт GCP для TravisCI
+- в проект TravisCI добавлены настройки для работы с GCP
+- для роли otus_ansible_db_role подготовлены сценарии molecule для тестирования на ВМ GCP
+- создано правило FW открывающее доступ по SSH для сервисного аккаунта TravisCI
+
+### Как провеорить:
+- Для локального тестирования роли выполнить последовательность комманд:
+```
+molecule create
+molecule converge
+molecule verify
+molecule destroy
+```
+- Для проверки статуса тестирования на ресурсах GCP перейти на страницу сборки в TravsiCI: `https://travis-ci.org/ivtcro/otus_ansible_db_role` или провеорить статус на бейдже в readme репозитория роли
