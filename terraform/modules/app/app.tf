@@ -72,6 +72,25 @@ resource "google_compute_firewall" "firewall_puma" {
   target_tags = ["reddit-app-${var.env_name}"]
 }
 
+resource "google_compute_firewall" "ngnix_http" {
+  name = "allow-ngnix-http"
+
+  # Название сети, в которой действует правило
+  network = "default"
+
+  # Какой доступ разрешить
+  allow {
+    protocol = "tcp"
+    ports    = ["80"]
+  }
+
+  # Каким адресам разрешаем доступ
+  source_ranges = ["0.0.0.0/0"]
+
+  # Правило применимо для инстансов с тегом …
+  target_tags = ["reddit-app-${var.env_name}"]
+}
+
 resource "google_compute_address" "app_ip" {
   name = "reddit-app-ip-${var.env_name}"
 }

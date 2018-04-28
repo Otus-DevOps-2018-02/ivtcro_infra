@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra.svg?branch=master)](https://travis-ci.org/Otus-DevOps-2018-02/ivtcro_infra)
+
 # Содержание
 1. [HOMEWORK №04: Bastion Host](#homework_04)
 2. [HOMEWORK №05: gcloud](#homework_05)
@@ -5,7 +7,8 @@
 4. [HOMEWORK №07: terraform](#homework_07)
 5. [HOMEWORK №08: terraform modules](#homework_08)
 6. [HOMEWORK №09: Ansible basics](#homework_09)
-6. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
+7. [HOMEWORK №10: Ansible advanced: templates, handlers,...](#homework_10)
+8. [HOMEWORK №11: Ansible roles](#homework_11)
 ___
 # HOMEWORK №04: Bastion Host <a name="homework_04"></a>
 ## Подключение через ssh к ВМ GCP
@@ -134,7 +137,7 @@ resource "google_compute_project_metadata" "default" {
 ___
 # HOMEWORK №08: terraform modules <a name="homework_08"></a>
 
-Что сделано:
+## Что сделано:
 
 1. Изучены команды terraform `init`, `get`
 2. Добавлен русурс для создания статического внешнего адреса, файл деплоя изменен для назначения этого адреса VM с приложением
@@ -150,10 +153,10 @@ ___
 9. Добавлены провижионеры для деполоя приложения и для настройки приложения и mongo с учетом работы на разных ВМ
 10. Добавлена переменная deploy_app, определяющая необходимость деплоя приложения, деплой приложения сделан условным
 
-__
+___
 # HOMEWORK №09: Ansible basics <a name="homework_09"></a>
 
-Что сделано:
+## Что сделано:
 
  - проинсталлирован и сконфигурирован ansible
  - созданы inventory файлы в формате ini, yaml.
@@ -161,11 +164,11 @@ __
  - выполнены задания для ознакомеления с различными видами тасков
  - создал простой плейбук для клонирования репозитория с github
 
-Как запустить проект:
+## Как запустить проект:
   - создать одно из окружения (stage/prod) в соответсвии с файлами деплоя из папки terraform выполнив комманду `terraform apply`
   - скорретировать файлы инвентори(inventory, inventory.json, inventory.yml) указав IP адреса созданных ВМ
 
-Как проверить работоспособность:
+## Как проверить работоспособность:
   - выполнить последовательно комманды:
   ```
      ansible-playbook -i inventory clone.yml
@@ -174,7 +177,7 @@ __
   ```
   и убедиться, что не возникло ошибок
 
-Ответ на вопрос в задании:
+## Ответ на вопрос в задании:
 Повторное выполнение комманды `ansible-playbook clone.yml`(делает клон репозитория на ВМ appserver) не приводит к изменениям на ВМ.
 ```
 appserver                  : ok=2    changed=0    unreachable=0    failed=0
@@ -185,29 +188,70 @@ appserver                  : ok=2    changed=1    unreachable=0    failed=0
 
 ```
 
-__
+___
 # HOMEWORK №10: Ansible advanced: templates, handlers,... <a name="homework_10"></a>
 
-
+## Что сделано:
 1. Создан файл `reddit_app_one_play.yml` с одним сценарием для установки puma, деполя приложения и изменения конфигов mongod
 2. Создан файл `reddit_app_multiple_plays.yml` с тремя сценарями: для установки puma, деполя приложения и изменения конфигов mongod
 3. Созданы отдельные файлы на каждый из сценариев: установки puma(`app.yml`), деполя приложения(`deploy.yml`) и изменения конфигов mongod(`db.yml`). И создан файл включающий эти три файла - `site.yml`
 4. Создан скрипт для формирования динамического репозитрия по данным полученнм от GCP: `gcp_inventory.py`
 5. Скрипты создания образов packer переделаны - shell-скрипты для профижионеров заменены на созданные ansible-playbook: `packer_db.yml` и `packer_app.yml`
 
-Как провеорить работу:
+## Как провеорить работу:
  - открыть доступ к 22 порту
  - запустить из корня репозитория сборку образов коммандами
 ```
-		packer build -var-file=packer/variables.json packer/app.json
-		packer build -var-file=packer/variables.json packer/db.json
+     packer build -var-file=packer/variables.json packer/app.json
+     packer build -var-file=packer/variables.json packer/db.json
 
 ```
  - закрыть доступ к порту 22
  - создать stage-окружение, для этого в папке `terraform/stage` выполнить комманду
 ```
-		terraform apply
+     terraform apply
 ```
  - скопировать/сохранить значение выходной переменной app_external_ip
- - перейти в папку `ansible` и выполнить комманду ansible-playbook site.yml
+ - перейти в папку `ansible` и выполнить комманду `ansible-playbook site.yml`
  - убедиться что открывается страница по URL app_external_ip:9292
+
+
+___
+# HOMEWORK №11: Ansible roles <a name="homework_11"></a>
+
+## Что сделано:
+1. Созданы роли для ВМ типа `app` и `db`
+2. Созданы описания окружений `environments/prod` и `environments/stage` с динамическими инвентори файлами
+3. Переменные для групп хостов вынесены в описание окружений в `environments/prod/group-vars` и `environments/stage/group-vars`, также добавлена переменная с именем окружения группы хостов `all`
+4. Все созданные ране plabook'и перемещены в папку `ansible/playbooks`
+5. Всевозможные варианты иныентори, созданные в предыдущих ДЗ, перемещены в папку `ansible/old`
+6. В playbook `app.yml` добавден вызов роли `jdauphant.nginx`
+7. Требования к роли `jdauphant.nginx` прописаны в файле `requrements.yml` в описании окружения
+8. Устнаовлена роль коммандоЙ:
+```
+     ansible-galaxy install -r environments/stage/requirements.yml
+```
+9. Создан playbook для провижионинга пользователей: `ansible/users.yml`
+10. Создан файл vault.key с ключем шифрования
+11. В описание окружений добавлены файлы с перечнем создаваемых пользователей и зашифованы с помощью Ansible Vault:
+```
+     ansible-vault encrypt environments/prod/credentials.yml
+     ansible-vault encrypt environments/stage/credentials.yml
+```
+12. Проверки TravisCI дополнены
+- `packer validate` для всех шаблонов
+- `terraform validate` и `tflint` для окружений stage и prod
+- `ansible-lint` для плейбуков ansible
+
+13. Статус сборки TravisCI вынесен в readme.
+
+## Как провеорить работы:
+
+- создать stage-окружение, для этого в папке `terraform/stage` выполнить комманду
+```
+     terraform apply
+```
+- скопировать/сохранить значение выходной переменной app_external_ip
+- перейти в папку `ansible` и выполнить комманду `ansible-playbook playbooks/site.yml`
+- убедиться что открывается страница по URL http://app_external_ip
+- подключится по ssh к любой из ВМ из под пользователя ivtcro и переключиться на пользователя admin
